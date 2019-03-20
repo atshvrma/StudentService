@@ -1,0 +1,49 @@
+jobs: 
+  build: 
+    machine: true
+    steps: 
+        run: 
+          command: |
+              cd ~
+              git clone git@github.com:atshvrma/StudentService.git
+              cd StudentService
+              mvn -DskipTests clean install
+          name: "git clone private project"
+      - checkout
+      - 
+        run: 
+          command: "mvn -DskipTests clean install dependency:resolve-plugins dependency:go-offline"
+          name: "maven build"
+      - 
+        run: 
+          command: "docker build -t $CIRCLE_PROJECT_REPONAME ."
+          name: "docker build"
+      # - 
+      #   run: 
+      #     command: |
+      #         docker tag $CIRCLE_PROJECT_REPONAME gcr.io/${GCLOUD_PROJECT_ID}/$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1
+      #         docker push gcr.io/${GCLOUD_PROJECT_ID}/$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1
+      #     name: "Push to GCloud Image Registry"
+      #     shell: /bin/bash
+    working_directory: ~/build
+  deploy-dev: 
+    machine: true
+    steps: 
+
+    working_directory: ~/build
+version: 2
+workflows: 
+  version: 2
+  build_and_deploy: 
+    jobs: 
+      - build
+      - 
+        deploy-dev-approval: 
+          requires: 
+            - build
+          type: approval
+      - 
+        deploy-dev: 
+          requires: 
+            - deploy-dev-approval
+
