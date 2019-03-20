@@ -27,9 +27,7 @@ jobs:
       #     name: "Push to GCloud Image Registry"
       #     shell: /bin/bash
     working_directory: ~/build
-  deploy-dev: 
-    machine: true
-    steps: 
+
 
     working_directory: ~/build
 version: 2
@@ -38,13 +36,3 @@ workflows:
   build_and_deploy: 
     jobs: 
       - build
-      - 
-        deploy-dev-approval: 
-          requires: 
-            - build
-          type: approval
-      - 
-        deploy-dev: 
-          requires: 
-            - deploy-dev-approval
-
