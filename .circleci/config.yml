@@ -27,9 +27,6 @@ jobs:
       #     name: "Push to GCloud Image Registry"
       #     shell: /bin/bash
     working_directory: ~/build
-
-
-    working_directory: ~/build
 version: 2
 workflows: 
   version: 2
